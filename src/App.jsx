@@ -5,6 +5,7 @@ import PokemonDetail from "./pages/PokemonDetail";
 import Navbar from "./components/Navbar";
 import { Switch, Route } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import MyPokemonContext from "./context/MyPokemonContext";
 
 function App() {
   const [myPokemon, setMyPokemon] = useState([]);
@@ -21,35 +22,28 @@ function App() {
     loadLocalStorage();
   }, []);
   return (
-    <div className="App">
-      <Navbar />
-      <Switch>
-        <Route
-          path="/detail/:id"
-          render={(props) => (
-            <PokemonDetail
-              myPokemon={myPokemon}
-              setMyPokemon={setMyPokemon}
-              {...props}
-            />
-          )}
-        />
-        <Route
-          path="/my-pokemon"
-          render={(props) => (
-            <MyPokemonList
-              myPokemon={myPokemon}
-              setMyPokemon={setMyPokemon}
-              {...props}
-            />
-          )}
-        />
-
-        <Route path="/">
-          <PokemonList />
-        </Route>
-      </Switch>
-    </div>
+    /*
+     * utilization of react context is unnecessary.
+     * However, it is being utilized to to meet up the competency of tokopedia tech stacks
+     */
+    <MyPokemonContext.Provider
+      value={{ myPokemon: myPokemon, setMyPokemon: setMyPokemon }}
+    >
+      <div className="App">
+        <Navbar />
+        <Switch>
+          <Route path="/detail/:id">
+            <PokemonDetail />
+          </Route>
+          <Route path="/my-pokemon">
+            <MyPokemonList />
+          </Route>
+          <Route path="/">
+            <PokemonList />
+          </Route>
+        </Switch>
+      </div>
+    </MyPokemonContext.Provider>
   );
 }
 
