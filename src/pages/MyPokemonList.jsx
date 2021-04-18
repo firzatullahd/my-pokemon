@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import MyPokemonContext from "../context/MyPokemonContext";
 
-export default function MyPokemonList({ myPokemon, setMyPokemon }) {
+export default function MyPokemonList() {
+  const { myPokemon, setMyPokemon } = useContext(MyPokemonContext);
+
   function deleteMyPokemon(index) {
     let myPokemonStorage = JSON.parse(localStorage.getItem("myPokemonStorage"));
     myPokemonStorage.splice(index, 1);

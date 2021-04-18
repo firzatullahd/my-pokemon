@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { getTypeImage } from "../utils";
+import MyPokemonContext from "../context/MyPokemonContext";
 
-export default function PokemonDetail({ myPokemon, setMyPokemon }) {
+export default function PokemonDetail() {
+  const { myPokemon, setMyPokemon } = useContext(MyPokemonContext);
   const [isLoading, setIsLoading] = useState(true);
   const [pokemon, setPokemon] = useState({});
   const history = useHistory();
@@ -16,7 +18,6 @@ export default function PokemonDetail({ myPokemon, setMyPokemon }) {
       setIsLoading(false);
       // console.log(res.data);
     };
-
     getPokemonDetail();
   }, [url]);
 
