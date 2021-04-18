@@ -22,6 +22,10 @@ function App() {
     loadLocalStorage();
   }, []);
   return (
+    /*
+     * utilization of react context is unnecessary.
+     * However, it is being utilized to to meet up the competency of tokopedia tech stacks
+     */
     <MyPokemonContext.Provider
       value={{ myPokemon: myPokemon, setMyPokemon: setMyPokemon }}
     >
