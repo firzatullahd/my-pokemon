@@ -6,9 +6,16 @@ import Navbar from "./components/Navbar";
 import { Switch, Route } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import MyPokemonContext from "./context/MyPokemonContext";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+
+const client = new ApolloClient({
+  uri: "https://graphql-pokeapi.vercel.app/api/graphql",
+  cache: new InMemoryCache(),
+});
 
 function App() {
   const [myPokemon, setMyPokemon] = useState([]);
+
   useEffect(() => {
     function loadLocalStorage() {
       let myPokemonStorage;
@@ -21,29 +28,32 @@ function App() {
     }
     loadLocalStorage();
   }, []);
+
   return (
     /*
      * utilization of react context is unnecessary.
      * However, it is being utilized to to meet up the competency of tokopedia tech stacks
      */
-    <MyPokemonContext.Provider
-      value={{ myPokemon: myPokemon, setMyPokemon: setMyPokemon }}
-    >
-      <div className="App">
-        <Navbar />
-        <Switch>
-          <Route path="/detail/:id">
-            <PokemonDetail />
-          </Route>
-          <Route path="/my-pokemon">
-            <MyPokemonList />
-          </Route>
-          <Route path="/">
-            <PokemonList />
-          </Route>
-        </Switch>
-      </div>
-    </MyPokemonContext.Provider>
+    <ApolloProvider client={client}>
+      <MyPokemonContext.Provider
+        value={{ myPokemon: myPokemon, setMyPokemon: setMyPokemon }}
+      >
+        <div className="App">
+          <Navbar />
+          <Switch>
+            <Route path="/detail/:id">
+              <PokemonDetail />
+            </Route>
+            <Route path="/my-pokemon">
+              <MyPokemonList />
+            </Route>
+            <Route path="/">
+              <PokemonList />
+            </Route>
+          </Switch>
+        </div>
+      </MyPokemonContext.Provider>
+    </ApolloProvider>
   );
 }
 
