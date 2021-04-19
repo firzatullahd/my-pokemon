@@ -1,27 +1,40 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 import { getTypeImage } from "../utils";
 import MyPokemonContext from "../context/MyPokemonContext";
+import { useQuery, gql } from "@apollo/client";
+
+const GET_POKEMON_DETAIL = gql`
+  query pokemon($name: String!) {
+    pokemon(name: $name) {
+      id
+      name
+      sprites {
+        front_default
+      }
+      moves {
+        move {
+          name
+        }
+      }
+      types {
+        type {
+          name
+        }
+      }
+    }
+  }
+`;
 
 export default function PokemonDetail() {
   const { myPokemon, setMyPokemon } = useContext(MyPokemonContext);
-  const [isLoading, setIsLoading] = useState(true);
-  const [pokemon, setPokemon] = useState({});
   const history = useHistory();
   const url = history.location.pathname.substring(8);
+  const { loading, error, data } = useQuery(GET_POKEMON_DETAIL, {
+    variables: { name: url },
+  });
 
-  useEffect(() => {
-    const getPokemonDetail = async () => {
-      let res = await axios.get(`https://pokeapi.co/api/v2/pokemon/${url}`);
-      setPokemon(res.data);
-      setIsLoading(false);
-      // console.log(res.data);
-    };
-    getPokemonDetail();
-  }, [url]);
-
-  function saveToLocalStorage(pokemon) {
+  function saveMyPokemon(pokemon) {
     let myPokemonStorage;
     if (localStorage.getItem("myPokemonStorage") === null) {
       myPokemonStorage = [];
@@ -30,10 +43,11 @@ export default function PokemonDetail() {
     }
     myPokemonStorage.push(pokemon);
     localStorage.setItem("myPokemonStorage", JSON.stringify(myPokemonStorage));
+    setMyPokemon(myPokemonStorage);
   }
 
   const catchPokemon = () => {
-    let isSuccess = Math.floor(Math.random() * 100) > 50;
+    const isSuccess = Math.floor(Math.random() * 100) > 50;
     if (isSuccess) {
       let pokemonName = prompt(
         "Please enter a name for your pokemon",
@@ -42,10 +56,8 @@ export default function PokemonDetail() {
 
       var i = myPokemon.findIndex((x) => x.pokemon_name === pokemonName);
       if (i <= -1) {
-        let newVal = { pokemon_name: pokemonName };
-        let newPokemon = { ...pokemon, ...newVal };
-        setMyPokemon([...myPokemon, newPokemon]);
-        saveToLocalStorage(newPokemon);
+        let newPokemon = { ...data.pokemon, pokemon_name: pokemonName };
+        saveMyPokemon(newPokemon);
       } else {
         alert("pokemon has run away, the name given must be unique");
       }
@@ -54,17 +66,21 @@ export default function PokemonDetail() {
     }
   };
 
-  if (isLoading) {
+  if (loading) {
     return <div className="loading">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="error">ERROR!!</div>;
   }
 
   return (
     <div>
       <button onClick={catchPokemon}>Catch</button>
-      <h1>{pokemon.name.toUpperCase()}</h1>
-      <img src={pokemon.sprites.front_default} alt="pokemon" />
+      <h1>{data.pokemon.name.toUpperCase()}</h1>
+      <img src={data.pokemon.sprites.front_default} alt="pokemon" />
       <h2>Pokemon Types</h2>
-      {pokemon.types.map((type, index) => (
+      {data.pokemon.types.map((type, index) => (
         <img
           key={index}
           src={getTypeImage(type.type.name)}
@@ -72,7 +88,7 @@ export default function PokemonDetail() {
         />
       ))}
       <h2>Pokemon Moves</h2>
-      {pokemon.moves.map((move, index) => (
+      {data.pokemon.moves.map((move, index) => (
         <p key={index}>{move.move.name}</p>
       ))}
     </div>

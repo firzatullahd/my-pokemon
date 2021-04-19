@@ -1,44 +1,59 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useQuery, gql } from "@apollo/client";
+
+const GET_POKEMONS = gql`
+  query pokemons($limit: Int, $offset: Int) {
+    pokemons(limit: $limit, offset: $offset) {
+      results {
+        name
+        image
+      }
+    }
+  }
+`;
 
 export default function PokemonList() {
-  const [pokemonList, setPokemonList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [next, setNext] = useState(1);
+  const [gqlVariables, setgqlVariables] = useState({ limit: 20, offset: 0 });
+  const { loading, error, data } = useQuery(GET_POKEMONS, {
+    variables: gqlVariables,
+  });
+  console.log(data);
 
-  const getPokemonList = async (input = 0) => {
-    let res = await axios.get(
-      `https://pokeapi.co/api/v2/pokemon?offset=${input * 20}&limit=20`
-    );
-    //console.log(res);
-    setPokemonList([...pokemonList, ...res.data.results]);
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    getPokemonList();
-    // eslint-disable-next-line
-  }, []);
-
-  if (isLoading) {
+  if (loading) {
     return <div className="loading">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="error">ERROR!!</div>;
   }
 
   return (
     <div>
       <h1>PokemonList</h1>
-      {!isLoading &&
-        pokemonList.map((pokemon, index) => (
+      {!loading &&
+        data.pokemons.results.map((pokemon, index) => (
           <Link to={`/detail/${pokemon.name}`} key={index}>
-            <p>{pokemon.name}</p>
+            <div className="pokemon">
+              <img src={pokemon.image} alt={pokemon.name} />
+              <p>{pokemon.name}</p>
+            </div>
           </Link>
         ))}
+      {gqlVariables.offset !== 0 ? (
+        <button
+          onClick={() =>
+            setgqlVariables({ limit: 20, offset: gqlVariables.offset - 20 })
+          }
+        >
+          Previous
+        </button>
+      ) : null}
+
       <button
-        onClick={() => {
-          getPokemonList(next);
-          setNext(next + 1);
-        }}
+        onClick={() =>
+          setgqlVariables({ limit: 20, offset: gqlVariables.offset + 20 })
+        }
       >
         Next
       </button>
