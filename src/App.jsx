@@ -1,12 +1,12 @@
-import "./styles/App.scss";
 import PokemonList from "./pages/PokemonList";
 import MyPokemonList from "./pages/MyPokemonList";
 import PokemonDetail from "./pages/PokemonDetail";
 import Navbar from "./components/Navbar";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import MyPokemonContext from "./context/MyPokemonContext";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { Global, css } from "@emotion/react";
 
 const client = new ApolloClient({
   uri: "https://graphql-pokeapi.vercel.app/api/graphql",
@@ -38,8 +38,25 @@ function App() {
       <MyPokemonContext.Provider
         value={{ myPokemon: myPokemon, setMyPokemon: setMyPokemon }}
       >
+        <Global
+          styles={css`
+            * {
+              box-sizing: border-box;
+              margin: 0;
+              padding: 0;
+            }
+            .loading,
+            .error {
+              display: flex;
+              justify-content: center;
+              padding: 10rem 0;
+              font-size: 2rem;
+              font-weight: bold;
+            }
+          `}
+        />
+        <Navbar />
         <div className="App">
-          <Navbar />
           <Switch>
             <Route path="/detail/:id">
               <PokemonDetail />
@@ -47,9 +64,10 @@ function App() {
             <Route path="/my-pokemon">
               <MyPokemonList />
             </Route>
-            <Route path="/">
+            <Route path="/pokedex">
               <PokemonList />
             </Route>
+            <Redirect from="/" to="/pokedex" />
           </Switch>
         </div>
       </MyPokemonContext.Provider>
