@@ -78,6 +78,7 @@ export default function PokemonList() {
 }
 
 const StyledTitle = styled.h1`
+  font-family: "Roboto", sans-serif;
   position: fixed;
   padding: 0.5rem;
   top: 0;
