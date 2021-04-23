@@ -52,11 +52,11 @@ export default function MyPokemonList() {
       )}
 
       <StyledMyPokemonList>
-        {myPokemon.map((p, index) => (
+        {myPokemon.map((p) => (
           <img
             src={p.sprites.front_default}
-            key={index}
-            alt={index}
+            key={p.name}
+            alt={p.name}
             onClick={(e) => {
               handleSelectPokemon(e);
             }}
