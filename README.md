@@ -2,8 +2,8 @@
 
 My Pokemon is Pokédex app for everyone to use. It contains detailed data on every single Pokémon. Catch Pokemons and keep them on your device.
 
-![preview1](https://github.com/firzatullahd/my-pokemon/blob/testing/public/preview1.png?raw=true)
-![preview2](https://github.com/firzatullahd/my-pokemon/blob/testing/public/preview2.png?raw=true)
+![preview1](https://raw.githubusercontent.com/firzatullahd/my-pokemon/master/preview1.png)
+![preview2](https://raw.githubusercontent.com/firzatullahd/my-pokemon/master/preview2.png)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
