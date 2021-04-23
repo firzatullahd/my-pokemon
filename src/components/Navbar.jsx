@@ -14,7 +14,7 @@ export default function Navbar() {
         ""
       ) : (
         <Link to="/pokedex">
-          <button>
+          <button data-testid="pokedex">
             <img src={pokemonLogo} alt="pokedex" className="pokedex" />
             Pokédex
           </button>
@@ -25,7 +25,7 @@ export default function Navbar() {
         ""
       ) : (
         <Link to="/my-pokemon">
-          <button>
+          <button data-testid="pokemon">
             <img src={pokeball} alt="pokeball" />
             Pokemon
           </button>

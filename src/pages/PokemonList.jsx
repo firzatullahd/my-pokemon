@@ -4,7 +4,7 @@ import { useQuery, gql } from "@apollo/client";
 import styled from "@emotion/styled";
 import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
 
-const GET_POKEMONS = gql`
+export const GET_POKEMONS = gql`
   query pokemons($limit: Int, $offset: Int) {
     pokemons(limit: $limit, offset: $offset) {
       results {
@@ -54,10 +54,15 @@ export default function PokemonList() {
         <div className="pokemon-list">
           {loading && <div className="loading">Loading...</div>}
           {!loading &&
-            data.pokemons.results.map((pokemon, index) => (
-              <Link to={`/detail/${pokemon.name}`} key={index}>
+            data.pokemons.results.map((pokemon) => (
+              <Link to={`/detail/${pokemon.name}`} key={pokemon.name}>
                 <div className="pokemon">
-                  <img src={pokemon.image} alt={pokemon.name} />
+                  <img
+                    src={pokemon.image}
+                    alt={pokemon.name}
+                    data-testid={pokemon.name}
+                  />
+                  {/* {pokemon.name} */}
                 </div>
               </Link>
             ))}
@@ -78,6 +83,7 @@ export default function PokemonList() {
 }
 
 const StyledTitle = styled.h1`
+  font-family: "Roboto", sans-serif;
   position: fixed;
   padding: 0.5rem;
   top: 0;
@@ -98,11 +104,23 @@ const StyledPokemonList = styled.div`
   .pokemon-list {
     flex: 10;
     margin: 0 0 0.5rem 0;
-    display: grid;
     text-align: center;
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 0;
     margin-bottom: 2.5rem;
+
+    @media (min-width: 720px) {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+  .pokemon {
+    img {
+      @media (min-width: 720px) {
+        width: 150px;
+      }
+    }
   }
 `;
 

@@ -5,7 +5,7 @@ import MyPokemonContext from "../context/MyPokemonContext";
 import { useQuery, gql } from "@apollo/client";
 import styled from "@emotion/styled";
 
-const GET_POKEMON_DETAIL = gql`
+export const GET_POKEMON_DETAIL = gql`
   query pokemon($name: String!) {
     pokemon(name: $name) {
       id
@@ -102,9 +102,9 @@ export default function PokemonDetail() {
       />
 
       <StyledPokemonTypes>
-        {data.pokemon.types.map((type, index) => (
+        {data.pokemon.types.map((type) => (
           <img
-            key={index}
+            key={type.type.name}
             src={getTypeImage(type.type.name)}
             alt={type.type.name}
             className="pokemon-type"
@@ -113,8 +113,8 @@ export default function PokemonDetail() {
       </StyledPokemonTypes>
       <StyledHeading>{pokemonName} Moves</StyledHeading>
       <StyledPokemonMoves>
-        {data.pokemon.moves.slice(0, 5).map((move, index) => (
-          <p key={index} className="pokemon-move">
+        {data.pokemon.moves.slice(0, 5).map((move) => (
+          <p key={move.move.name} className="pokemon-move">
             {move.move.name}
           </p>
         ))}
@@ -163,6 +163,7 @@ const StyledPokemonMoves = styled.div`
 `;
 
 const StyledTitle = styled.h1`
+  font-family: "Roboto", sans-serif;
   margin: 1rem 2rem;
   padding: 0.25rem;
   text-align: center;
