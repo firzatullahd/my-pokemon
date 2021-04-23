@@ -76,6 +76,7 @@ const StyledMyPokemonListPage = styled.section`
 `;
 
 const StyledTitle = styled.h1`
+  font-family: "Roboto", sans-serif;
   margin: 1rem 2rem;
   padding: 0.25rem;
   text-align: center;
