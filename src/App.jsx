@@ -5,18 +5,30 @@ import Navbar from "./components/Navbar";
 import { Switch, Route, Redirect } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import MyPokemonContext from "./context/MyPokemonContext";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { Global, css } from "@emotion/react";
-
-const client = new ApolloClient({
-  uri: "https://graphql-pokeapi.vercel.app/api/graphql",
-  cache: new InMemoryCache(),
-});
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { LocalStorageWrapper, persistCache } from "apollo3-cache-persist";
 
 function App() {
   const [myPokemon, setMyPokemon] = useState([]);
+  const [client, setClient] = useState();
 
   useEffect(() => {
+    async function init() {
+      const cache = new InMemoryCache();
+      await persistCache({
+        cache,
+        storage: new LocalStorageWrapper(window.localStorage),
+      });
+      setClient(
+        new ApolloClient({
+          uri: "https://graphql-pokeapi.vercel.app/api/graphql",
+          cache,
+        })
+      );
+    }
+
+    init().catch(console.error);
     function loadLocalStorage() {
       let myPokemonStorage;
       if (localStorage.getItem("myPokemonStorage") === null) {
@@ -28,6 +40,10 @@ function App() {
     }
     loadLocalStorage();
   }, []);
+
+  if (!client) {
+    return <div className="loading">Initializing app...</div>;
+  }
 
   return (
     /*
