@@ -1,6 +1,9 @@
 # My Pokemon
 
+### [LIVE DEMO](https://my-pokemon-git-master-firzatullahd.vercel.app/)
+
 My Pokemon is Pokédex app for everyone to use. It contains detailed data on every single Pokémon. Catch Pokemons and keep them on your device.
+Available to be installed in mobile phone as Progressive Web App.
 
 ![preview1](https://raw.githubusercontent.com/firzatullahd/my-pokemon/master/preview1.png)
 ![preview2](https://raw.githubusercontent.com/firzatullahd/my-pokemon/master/preview2.png)
